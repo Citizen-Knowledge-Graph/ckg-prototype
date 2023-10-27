@@ -2,8 +2,8 @@ import SHACLValidator from "rdf-validate-shacl"
 import factory from "@zazuko/env-node"
 
 export async function runQueryOnProfile(queryName, profileName) {
-    const shapes = await factory.dataset().import(factory.fromFile(`queries/${queryName}.ttl`))
-    const data = await factory.dataset().import(factory.fromFile(`profiles/${profileName}.ttl`))
+    const shapes = await factory.dataset().import(factory.fromFile(`db/queries/${queryName}.ttl`))
+    const data = await factory.dataset().import(factory.fromFile(`db/profiles/${profileName}.ttl`))
 
     const validator = new SHACLValidator(shapes, { factory })
     const report = await validator.validate(data)
