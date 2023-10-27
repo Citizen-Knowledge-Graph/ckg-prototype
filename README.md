@@ -9,5 +9,5 @@ npm install
 ## Run
 
 ```sh
-npm start run-query-on-profile solar-funding user-a
+npm start run-query-on-profile citizen-solar-funding citizen-a
 ```
