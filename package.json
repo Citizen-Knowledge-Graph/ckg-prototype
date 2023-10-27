@@ -1,0 +1,16 @@
+{
+  "name": "ckg-cli",
+  "version": "0.0.1",
+  "bin": {
+    "ckg": "ckg.js"
+  },
+  "scripts": {
+    "start": "node cli/cli.js"
+  },
+  "main": "ckg.js",
+  "type": "module",
+  "dependencies": {
+    "@zazuko/env-node": "^1.0.0",
+    "rdf-validate-shacl": "^0.5.1"
+  }
+}
