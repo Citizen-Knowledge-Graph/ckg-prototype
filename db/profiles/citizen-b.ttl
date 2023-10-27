@@ -1,7 +1,3 @@
 @prefix ckg: <http://ckg.de/default#> .
 
-ckg:House1 a ckg:House ;
-           ckg:roofArea 50 .
-
-ckg:citizen-b a ckg:Person, ckg:Citizen ;
-              ckg:owns ckg:House1 .
+ckg:citizen-b a ckg:Person, ckg:Citizen .

@@ -9,17 +9,29 @@ ckg:metadata ckg:author ckg:benjaminaaron ;
              ckg:targetGroup ckg:Citizen ;
              ckg:fundingProvider ckg:GermanState .
 
+ckg:CitizenOwnsHouseShape
+    a sh:NodeShape ;
+    sh:targetClass ckg:Citizen ;
+    sh:property [
+          sh:path ckg:owns ;
+          sh:class ckg:House ;
+          sh:minCount 1 ;
+          sh:message "Each citizen must own at least one house."
+      ] .
+
 ckg:HouseEligibleForSolarFundingShape
     a sh:NodeShape ;
     sh:targetClass ckg:House ;
     sh:property [
         sh:path ckg:roofArea ;
+        sh:minCount 1 ;
         sh:datatype xsd:integer ;
         sh:minInclusive 100 ;
         sh:message "Roof area is below the minimum required" ;
     ] ;
     sh:property [
         sh:path ckg:houseAge ;
+        sh:minCount 1 ;
         sh:datatype xsd:integer ;
         sh:minInclusive 30 ;
         sh:message "House age is below the minimum required" ;
