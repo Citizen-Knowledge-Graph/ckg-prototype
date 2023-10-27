@@ -4,9 +4,10 @@
 
 ckg:metadata ckg:author ckg:benjaminaaron ;
              ckg:created "2023-10-26"^^xsd:date ;
-             ckg:title "Checks if house owners are eligible for solar funding" ;
+             ckg:title "Checks if house owners are eligible for funding for solar panels" ;
              ckg:queryType ckg:dev ;
-             ckg:targetGroup ckg:citizens .
+             ckg:targetGroup ckg:Citizen ;
+             ckg:fundingProvider ckg:GermanState .
 
 ckg:HouseEligibleForSolarFundingShape
     a sh:NodeShape ;

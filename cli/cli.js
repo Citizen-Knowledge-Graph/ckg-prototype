@@ -1,4 +1,4 @@
-import { runQueryOnProfile } from '../src/lib.js';
+import { runQueryOnProfile } from "../src/lib.js"
 
 const commands = {
     "run-query-on-profile": runQueryOnProfile,

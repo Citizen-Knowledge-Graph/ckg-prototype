@@ -1,0 +1,6 @@
+@prefix ckg: <http://ckg.de/default#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ckg:municipality-a a ckg:Municipality ;
+                   ckg:population "12000"^^xsd:integer ;
+                   ckg:numberOfSchools "2"^^xsd:integer .
