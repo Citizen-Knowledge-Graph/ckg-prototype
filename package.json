@@ -5,6 +5,7 @@
     "ckg": "ckg.js"
   },
   "scripts": {
+    "build": "tsc",
     "start": "node cli/cli.js"
   },
   "main": "ckg.js",

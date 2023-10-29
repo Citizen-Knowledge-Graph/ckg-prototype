@@ -1,3 +1,6 @@
+# Javascript
+*.js
+
 # IntelliJ
 .idea/
 
