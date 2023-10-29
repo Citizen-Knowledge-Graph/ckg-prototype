@@ -12,7 +12,7 @@ export async function runQueryOnProfile(queryName: string, profileName: string) 
     // get report details: https://github.com/zazuko/rdf-validate-shacl#usage
     // console.log(await report.dataset.serialize({ format: "text/n3" }))
 
-    console.log("--> " + profileName + " is" + (report.conforms ? " " : " not ") + "eligible for " + queryName)
+    console.log("--> " + profileName + " is" + (report.conforms ? " " : " NOT ") + "eligible for " + queryName)
     // TODO in case of non-conformity, print the violations
 }
 

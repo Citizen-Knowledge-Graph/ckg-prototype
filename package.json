@@ -6,7 +6,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "node cli/cli.js"
+    "start": "tsc && node cli/cli.js"
   },
   "main": "ckg.js",
   "type": "module",
