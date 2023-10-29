@@ -1,7 +1,9 @@
+// @ts-ignore
 import SHACLValidator from "rdf-validate-shacl"
+// @ts-ignore
 import factory from "@zazuko/env-node"
 
-export async function runQueryOnProfile(queryName, profileName) {
+export async function runQueryOnProfile(queryName: string, profileName: string) {
     const shapes = await factory.dataset().import(factory.fromFile(`db/queries/${queryName}.ttl`))
     const data = await factory.dataset().import(factory.fromFile(`db/profiles/${profileName}.ttl`))
 
@@ -16,7 +18,7 @@ export async function runQueryOnProfile(queryName, profileName) {
 }
 
 // TODO
-async function runAllQueriesOnProfile(profileName) {}
+async function runAllQueriesOnProfile(profileName: string) {}
 async function runAllQueriesOnAllProfiles() {}
 function createProfile() {}
 function createQuery() {}

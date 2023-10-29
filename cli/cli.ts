@@ -1,6 +1,6 @@
 import { runQueryOnProfile } from "../src/lib.js"
 
-const commands = {
+const commands: { [key: string] : (...args: string[]) => void } = {
     "run-query-on-profile": runQueryOnProfile,
 }
 
