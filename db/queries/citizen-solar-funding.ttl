@@ -27,12 +27,12 @@ ckg:HouseEligibleForSolarFundingShape
         sh:minCount 1 ;
         sh:datatype xsd:integer ;
         sh:minInclusive 100 ;
-        sh:message "Roof area is below the minimum required" ;
+        sh:message "120" ;
     ] ;
     sh:property [
         sh:path ckg:houseAge ;
         sh:minCount 1 ;
         sh:datatype xsd:integer ;
-        sh:minInclusive 30 ;
-        sh:message "House age is below the minimum required" ;
+        sh:maxInclusive 20 ;
+        sh:message "20" ;
     ] .

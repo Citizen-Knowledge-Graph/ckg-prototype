@@ -1,0 +1,3 @@
+@prefix ckg: <http://ckg.de/default#> .
+
+ckg:citizen-c a ckg:Person, ckg:Citizen .

@@ -1,8 +1,8 @@
 @prefix ckg: <http://ckg.de/default#> .
 
-ckg:House1 a ckg:House ;
+ckg:HouseA a ckg:House ;
            ckg:roofArea 110 ;
-           ckg:houseAge 35 .
+           ckg:houseAge 15 .
 
 ckg:citizen-a a ckg:Person, ckg:Citizen ;
-              ckg:owns ckg:House1 .
+              ckg:owns ckg:HouseA .
