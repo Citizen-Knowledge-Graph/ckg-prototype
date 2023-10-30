@@ -13,6 +13,7 @@
   "dependencies": {
     "@comunica/query-sparql-rdfjs": "^2.10.0",
     "@zazuko/env-node": "^1.0.0",
+    "cli-table3": "^0.6.3",
     "n3": "^1.17.2",
     "rdf-validate-shacl": "^0.5.1"
   }
