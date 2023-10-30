@@ -48,8 +48,6 @@ export async function printAllQueries() {
     console.log(queries)
 }
 
-void printAllQueries()
-
 // TODO
 async function runAllQueriesOnProfile(profileName: string) {}
 async function runAllQueriesOnAllProfiles() {}
