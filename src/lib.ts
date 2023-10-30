@@ -37,12 +37,15 @@ export async function printAllQueries() {
 
     // load all file names in db/queries
     const queryNames = await readFiles("db/queries")
-    console.log(queryNames)
 
     for (const queryName of queryNames) {
         console.log("\n--> " + queryName)
-        let ds = await factory.dataset().import(factory.fromFile(queryName))
-        console.log(await ds.serialize({ format: "text/n3" }))
+        const ds = await factory.dataset().import(factory.fromFile(queryName))
+        for (const quad of ds) {
+            if (quad.predicate.value === "http://ckg.de/default#title") {
+                console.log("Query Title: " + quad.object.value)
+            }
+        }
     }
 }
 
