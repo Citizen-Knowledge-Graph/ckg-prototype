@@ -3,7 +3,10 @@ import SHACLValidator from "rdf-validate-shacl"
 // @ts-ignore
 import factory from "@zazuko/env-node"
 import { readFiles } from "./utils.js";
-
+// @ts-ignore
+import { QueryEngine } from "@comunica/query-sparql-rdfjs"
+// @ts-ignore
+import { Store as N3Store } from "n3"
 
 export async function runQueryOnProfile(queryName: string, profileName: string) {
     const shapes = await factory.dataset().import(factory.fromFile(`db/queries/${queryName}.ttl`))
@@ -41,11 +44,25 @@ export async function printAllQueries() {
     for (const queryName of queryNames) {
         console.log("\n--> " + queryName)
         const ds = await factory.dataset().import(factory.fromFile(queryName))
-        for (const quad of ds) {
-            if (quad.predicate.value === "http://ckg.de/default#title") {
-                console.log("Query Title: " + quad.object.value)
-            }
-        }
+
+        const store = new N3Store()
+        for (const quad of ds) store.add(quad) // this shouldn't be necessary, is there a more direct way? TODO
+        const engine = new QueryEngine()
+        const query = `
+            PREFIX ckg: <http://ckg.de/default#>
+            SELECT ?title WHERE {
+                ?s ckg:title ?title .
+            }`
+
+        const bindingsStream = await engine.queryBindings(query, { sources: [store] })
+        const bindings = await bindingsStream.toArray()
+        console.log("Query Title: " + bindings[0].get("title").value)
+
+        // for (const quad of ds) {
+        //     if (quad.predicate.value === "http://ckg.de/default#title") {
+        //         console.log("Query Title: " + quad.object.value)
+        //     }
+        // }
     }
 }
 
