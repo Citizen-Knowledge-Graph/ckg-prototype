@@ -39,13 +39,11 @@ export async function printAllQueries() {
     const queryNames = await readFiles("db/queries")
     console.log(queryNames)
 
-    let quads = [];
     for (const queryName of queryNames) {
-        quads.push(await factory.dataset().import(factory.fromFile(queryName)))
+        console.log("\n--> " + queryName)
+        let ds = await factory.dataset().import(factory.fromFile(queryName))
+        console.log(await ds.serialize({ format: "text/n3" }))
     }
-
-    const queries = await factory.dataset().addAll(...quads)
-    console.log(queries)
 }
 
 // TODO
