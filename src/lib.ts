@@ -62,17 +62,21 @@ export async function printAllQueries() {
 
         query = `
             PREFIX sh: <http://www.w3.org/ns/shacl#>
-            SELECT (?path AS ?condition) ?class ?min ?max WHERE {
+            SELECT (?path AS ?condition) ?class ?min ?max (?inValue AS ?exact) WHERE {
                 ?shape sh:property ?propertyShape .
                 ?propertyShape sh:path ?path .
                 OPTIONAL { ?propertyShape sh:class ?class . }
                 OPTIONAL { ?propertyShape sh:minInclusive ?min . }
                 OPTIONAL { ?propertyShape sh:maxInclusive ?max . }
+                OPTIONAL { 
+                    ?propertyShape sh:in ?inList . 
+                    ?inList rdf:rest*/rdf:first ?inValue .
+                }
             }`
         bindingsStream = await engine.queryBindings(query, { sources: [store] })
         bindings = await bindingsStream.toArray()
 
-        const headers = ["condition", "class", "min", "max"]
+        const headers = ["condition", "class", "min", "max", "exact"]
         const rows = bindings.map((binding: any) => {
             return headers.map(header => {
                 const term = binding.get(header)
