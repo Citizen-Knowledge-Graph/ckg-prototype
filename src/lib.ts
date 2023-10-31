@@ -3,8 +3,6 @@ import SHACLValidator from "rdf-validate-shacl"
 // @ts-ignore
 import factory from "@zazuko/env-node"
 import {readFiles} from "./utils.js";
-// @ts-ignore
-import {Store as N3Store, Parser as N3Parser} from "n3"
 
 import Storage from "./storage.js";
 
