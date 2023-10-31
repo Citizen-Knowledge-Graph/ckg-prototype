@@ -26,15 +26,16 @@ export async function runQueryOnProfile(queryName: string, profileName: string) 
         let path = result.path.value.split('#')[1] // houseAge
         let focusNode = result.focusNode.value.split('#')[1] // House1
         let constraint = result.sourceConstraintComponent.value.split('#')[1]
-        let value = result.value ? result.value.value : null
-        let msg = path + " of " + focusNode + " is " + value + ", which is "
+        let value = result.value ? (" is " + result.value.value) : " does not exist "
+        let msg = path + " of " + focusNode + value
         if (constraint === "MaxInclusiveConstraintComponent") {
-            msg += "over the maximum of "
+            msg += ", which is over the maximum of " + thresholdValue
         }
         if (constraint === "MinInclusiveConstraintComponent") {
-            msg += "below the minimum of "
+            msg += ", which is below the minimum of " + thresholdValue
         }
-        console.log(msg + thresholdValue)
+        // if (constraint === "MinCountConstraintComponent") {}
+        console.log(msg)
     }
 }
 
