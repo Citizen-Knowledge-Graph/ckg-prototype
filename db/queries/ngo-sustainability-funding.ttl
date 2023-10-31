@@ -1,6 +1,7 @@
 @prefix ckg: <http://ckg.de/default#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
 ckg:metadata ckg:author ckg:benjaminaaron ;
              ckg:created "2023-10-27"^^xsd:date ;
