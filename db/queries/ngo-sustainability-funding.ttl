@@ -9,6 +9,15 @@ ckg:metadata ckg:author ckg:benjaminaaron ;
              ckg:targetGroup ckg:NGO;
              ckg:fundingProvider ckg:CityOfBerlin .
 
+ckg:TypeDeclarationShape
+    a sh:NodeShape ;
+    sh:targetNode ckg:this ;
+    sh:property [
+          sh:path rdf:type ;
+          sh:hasValue ckg:NGOProfile ;
+          sh:minCount 1 ;
+      ] .
+
 ckg:MunicipalityEligibleForSportFieldFundingShape
     a sh:NodeShape ;
     sh:targetClass ckg:NGO ;

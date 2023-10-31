@@ -1,6 +1,7 @@
 @prefix ckg: <http://ckg.de/default#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
 ckg:metadata ckg:author ckg:benjaminaaron ;
              ckg:created "2023-10-26"^^xsd:date ;
@@ -9,6 +10,15 @@ ckg:metadata ckg:author ckg:benjaminaaron ;
              ckg:targetGroup ckg:Citizen ;
              ckg:fundingProvider ckg:GermanState .
 
+ckg:TypeDeclarationShape
+    a sh:NodeShape ;
+    sh:targetNode ckg:this ;
+    sh:property [
+          sh:path rdf:type ;
+          sh:hasValue ckg:CitizenProfile ;
+          sh:minCount 1 ;
+      ] .
+
 ckg:CitizenOwnsHouseShape
     a sh:NodeShape ;
     sh:targetClass ckg:Citizen ;
@@ -16,7 +26,6 @@ ckg:CitizenOwnsHouseShape
           sh:path ckg:owns ;
           sh:class ckg:House ;
           sh:minCount 1 ;
-          sh:message "Each citizen must own at least one house."
       ] .
 
 ckg:HouseEligibleForSolarFundingShape
@@ -27,12 +36,10 @@ ckg:HouseEligibleForSolarFundingShape
         sh:minCount 1 ;
         sh:datatype xsd:integer ;
         sh:minInclusive 100 ;
-        sh:message "120" ;
     ] ;
     sh:property [
         sh:path ckg:houseAge ;
         sh:minCount 1 ;
         sh:datatype xsd:integer ;
         sh:maxInclusive 20 ;
-        sh:message "20" ;
     ] .

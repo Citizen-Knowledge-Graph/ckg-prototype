@@ -1,3 +1,5 @@
 @prefix ckg: <http://ckg.de/default#> .
 
+ckg:this a ckg:CitizenProfile .
+
 ckg:citizen-c a ckg:Person, ckg:Citizen .

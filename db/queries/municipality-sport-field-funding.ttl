@@ -9,6 +9,15 @@ ckg:metadata ckg:author ckg:benjaminaaron ;
              ckg:targetGroup ckg:Municipality ;
              ckg:fundingProvider ckg:GermanState .
 
+ckg:TypeDeclarationShape
+    a sh:NodeShape ;
+    sh:targetNode ckg:this ;
+    sh:property [
+          sh:path rdf:type ;
+          sh:hasValue ckg:MunicipalityProfile ;
+          sh:minCount 1 ;
+      ] .
+
 ckg:MunicipalityEligibleForSportFieldFundingShape
     a sh:NodeShape ;
     sh:targetClass ckg:Municipality ;

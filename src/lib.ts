@@ -2,7 +2,7 @@
 import SHACLValidator from "rdf-validate-shacl"
 // @ts-ignore
 import factory from "@zazuko/env-node"
-import {readFiles} from "./utils.js";
+import {hasTypeDeclaration, readFiles} from "./utils.js";
 
 import Storage from "./storage.js";
 
@@ -10,6 +10,11 @@ import Storage from "./storage.js";
 export async function runQueryOnProfile(queryName: string, profileName: string) {
     const shapes = await factory.dataset().import(factory.fromFile(`db/queries/${queryName}.ttl`))
     const data = await factory.dataset().import(factory.fromFile(`db/profiles/${profileName}.ttl`))
+
+    if (!hasTypeDeclaration(data)) {
+        console.error("The profile " + profileName + " can't be processed because it does not declare a type.")
+        return
+    }
 
     const validator = new SHACLValidator(shapes, {factory})
     const report = validator.validate(data)

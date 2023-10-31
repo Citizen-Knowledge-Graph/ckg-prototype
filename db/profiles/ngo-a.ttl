@@ -1,6 +1,8 @@
 @prefix ckg: <http://ckg.de/default#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+ckg:this a ckg:NGOProfile .
+
 ckg:ngo-a a ckg:NGO ;
           ckg:employees "20"^^xsd:integer ;
           ckg:focusArea "Sustainability" ;
