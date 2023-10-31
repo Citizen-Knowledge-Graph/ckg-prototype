@@ -8,6 +8,21 @@ import {hasTypeDeclaration, readFiles} from "./utils.js";
 import Storage from "./storage.js";
 
 
+export async function printAllQueries() {
+    const storage = new Storage();
+
+    // load all file names in db/queries
+    const queryNames = await readFiles("db/queries")
+
+    // load files to storage
+    for (const queryName of queryNames) {
+        await storage.loadFile(queryName)
+    }
+
+    // print table for each graph
+    await storage.buildTable();
+}
+
 export async function runQueryOnProfile(queryName: string, profileName: string) {
     const shapes = await factory.dataset().import(factory.fromFile(`db/queries/${queryName}.ttl`))
     const data = await factory.dataset().import(factory.fromFile(`db/profiles/${profileName}.ttl`))
@@ -56,25 +71,12 @@ export async function runQueryOnProfile(queryName: string, profileName: string) 
     console.log(table.toString())
 }
 
-export async function printAllQueries() {
-    const storage = new Storage();
-
-    // load all file names in db/queries
-    const queryNames = await readFiles("db/queries")
-
-    // load files to storage
-    for (const queryName of queryNames) {
-        await storage.loadFile(queryName)
-    }
-
-    // print table for each graph
-    await storage.buildTable();
+async function runAllQueriesOnProfile(profileName: string) {
+    // TODO
+    // Show table: one query per row. Columns: query name, # of violations, # of missing data points
+    // Print summary: # of eligible queries, # of non-eligible queries, # of queries with missing data points
 }
 
-// printAllQueries();
-
-// TODO
-async function runAllQueriesOnProfile(profileName: string) {}
 async function runAllQueriesOnAllProfiles() {}
 function createProfile() {}
 function createQuery() {}
