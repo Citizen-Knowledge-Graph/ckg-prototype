@@ -26,7 +26,8 @@ export async function runQueryOnProfile(queryName: string, profileName: string) 
         let path = result.path.value.split('#')[1] // houseAge
         let focusNode = result.focusNode.value.split('#')[1] // House1
         let constraint = result.sourceConstraintComponent.value.split('#')[1]
-        let msg = path + " of " + focusNode + " is " + result.value.value + ", which is "
+        let value = result.value ? result.value.value : null
+        let msg = path + " of " + focusNode + " is " + value + ", which is "
         if (constraint === "MaxInclusiveConstraintComponent") {
             msg += "over the maximum of "
         }
