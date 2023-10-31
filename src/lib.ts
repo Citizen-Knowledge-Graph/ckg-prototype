@@ -4,30 +4,10 @@ import SHACLValidator from "rdf-validate-shacl"
 import factory from "@zazuko/env-node"
 import {readFiles} from "./utils.js";
 // @ts-ignore
-import {QueryEngine} from "@comunica/query-sparql-rdfjs"
-// @ts-ignore
 import {Store as N3Store, Parser as N3Parser} from "n3"
-// @ts-ignore
-import Table from "cli-table3"
 
 import Storage from "./storage.js";
 
-
-async function readToN3() {
-    const storage = new Storage();
-    await storage.loadFile("db/queries/municipality-sport-field-funding.ttl")
-    await storage.loadFile("db/queries/citizen-solar-funding.ttl")
-    //await storage.printStore()
-    // let query = `
-    //         PREFIX ckg: <http://ckg.de/default#>
-    //         SELECT ?title WHERE {
-    //             ?s ckg:title ?title .
-    //         }`
-    // await storage.runQuery(query);
-    await storage.buildTable();
-}
-
-readToN3()
 
 export async function runQueryOnProfile(queryName: string, profileName: string) {
     const shapes = await factory.dataset().import(factory.fromFile(`db/queries/${queryName}.ttl`))
@@ -58,17 +38,21 @@ export async function runQueryOnProfile(queryName: string, profileName: string) 
 }
 
 export async function printAllQueries() {
-
     const storage = new Storage();
-
 
     // load all file names in db/queries
     const queryNames = await readFiles("db/queries")
 
+    // load files to storage
     for (const queryName of queryNames) {
-
+        await storage.loadFile(queryName)
     }
+
+    // print table for each graph
+    await storage.buildTable();
 }
+
+printAllQueries();
 
 // TODO
 async function runAllQueriesOnProfile(profileName: string) {

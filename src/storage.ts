@@ -6,7 +6,7 @@ import {QueryEngine} from "@comunica/query-sparql-rdfjs"
 // @ts-ignore
 import Table from "cli-table3"
 
-const { namedNode, literal, defaultGraph, quad } = DataFactory;
+const { quad } = DataFactory;
 
 class Storage {
     private static _instance: any;
@@ -46,20 +46,7 @@ class Storage {
         });
     }
 
-    async printStore() {
-        for (const quad of this.data)
-            console.log("data", quad);
-    }
-
-    async runQuery(query: string) {
-        const engine = new QueryEngine()
-        let bindingsStream = await engine.queryBindings(query, {sources: [this.data]})
-        let bindings = await bindingsStream.toArray()
-        for (const binding of bindings) {
-            console.log("Query Title: " + binding.get("title").value)
-        }
-    }
-
+    // this looks pretty chaotic - would require some more work to make it readable
     async buildTable() {
         const engine = new QueryEngine()
         let query = `
@@ -80,8 +67,6 @@ class Storage {
         let bindingsStream = await engine.queryBindings(query, {sources: [this.data]})
         let bindings = await bindingsStream.toArray()
 
-        const headers = ["condition", "class", "min", "max", "exact"]
-
         const groupedByGraph: { [key: string]: any } = {};
 
         bindings.forEach((binding: any) => {
@@ -92,6 +77,7 @@ class Storage {
             groupedByGraph[graph].push(binding);
         });
 
+        const headers = ["condition", "class", "min", "max", "exact"]
         Object.entries(groupedByGraph).forEach(([graph, bindingsForGraph]) => {
             console.log(`Results for file (graph): ${graph}`);
 
