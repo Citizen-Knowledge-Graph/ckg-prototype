@@ -55,14 +55,7 @@ export async function printAllQueries() {
 printAllQueries();
 
 // TODO
-async function runAllQueriesOnProfile(profileName: string) {
-}
-
-async function runAllQueriesOnAllProfiles() {
-}
-
-function createProfile() {
-}
-
-function createQuery() {
-}
+async function runAllQueriesOnProfile(profileName: string) {}
+async function runAllQueriesOnAllProfiles() {}
+function createProfile() {}
+function createQuery() {}
