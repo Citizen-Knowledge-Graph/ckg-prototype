@@ -36,10 +36,12 @@ ckg:HouseEligibleForSolarFundingShape
         sh:minCount 1 ;
         sh:datatype xsd:integer ;
         sh:minInclusive 100 ;
+        sh:message "100" ;
     ] ;
     sh:property [
         sh:path ckg:houseAge ;
         sh:minCount 1 ;
         sh:datatype xsd:integer ;
         sh:maxInclusive 20 ;
+        sh:message "20" ;
     ] .
