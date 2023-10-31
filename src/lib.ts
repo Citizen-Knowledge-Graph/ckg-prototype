@@ -2,19 +2,18 @@
 import SHACLValidator from "rdf-validate-shacl"
 // @ts-ignore
 import factory from "@zazuko/env-node"
-import { readFiles } from "./utils.js";
+import {readFiles} from "./utils.js";
 // @ts-ignore
-import { QueryEngine } from "@comunica/query-sparql-rdfjs"
-// @ts-ignore
-import { Store as N3Store } from "n3"
-// @ts-ignore
-import Table from "cli-table3"
+import {Store as N3Store, Parser as N3Parser} from "n3"
+
+import Storage from "./storage.js";
+
 
 export async function runQueryOnProfile(queryName: string, profileName: string) {
     const shapes = await factory.dataset().import(factory.fromFile(`db/queries/${queryName}.ttl`))
     const data = await factory.dataset().import(factory.fromFile(`db/profiles/${profileName}.ttl`))
 
-    const validator = new SHACLValidator(shapes, { factory })
+    const validator = new SHACLValidator(shapes, {factory})
     const report = validator.validate(data)
 
     // get report details: https://github.com/zazuko/rdf-validate-shacl#usage
@@ -39,63 +38,21 @@ export async function runQueryOnProfile(queryName: string, profileName: string) 
 }
 
 export async function printAllQueries() {
+    const storage = new Storage();
 
     // load all file names in db/queries
     const queryNames = await readFiles("db/queries")
 
+    // load files to storage
     for (const queryName of queryNames) {
-        console.log("\n--> " + queryName)
-        const ds = await factory.dataset().import(factory.fromFile(queryName))
-
-        const store = new N3Store()
-        for (const quad of ds) store.add(quad) // this shouldn't be necessary, is there a more direct way? TODO
-        const engine = new QueryEngine()
-        let query = `
-            PREFIX ckg: <http://ckg.de/default#>
-            SELECT ?title WHERE {
-                ?s ckg:title ?title .
-            }`
-
-        let bindingsStream = await engine.queryBindings(query, { sources: [store] })
-        let bindings = await bindingsStream.toArray()
-        console.log("Query Title: " + bindings[0].get("title").value)
-
-        query = `
-            PREFIX sh: <http://www.w3.org/ns/shacl#>
-            SELECT (?path AS ?condition) ?class ?min ?max (?inValue AS ?exact) WHERE {
-                ?shape sh:property ?propertyShape .
-                ?propertyShape sh:path ?path .
-                OPTIONAL { ?propertyShape sh:class ?class . }
-                OPTIONAL { ?propertyShape sh:minInclusive ?min . }
-                OPTIONAL { ?propertyShape sh:maxInclusive ?max . }
-                OPTIONAL { 
-                    ?propertyShape sh:in ?inList . 
-                    ?inList rdf:rest*/rdf:first ?inValue .
-                }
-            }`
-        bindingsStream = await engine.queryBindings(query, { sources: [store] })
-        bindings = await bindingsStream.toArray()
-
-        const headers = ["condition", "class", "min", "max", "exact"]
-        const rows = bindings.map((binding: any) => {
-            return headers.map(header => {
-                const term = binding.get(header)
-                if (!term) return ''
-                if (term.value.includes('#')) return term.value.split('#')[1]
-                return term.value
-            })
-        })
-        const table = new Table({ head: headers })
-        rows.forEach((row: any) => table.push(row))
-        console.log(table.toString())
-
-        // for (const quad of ds) {
-        //     if (quad.predicate.value === "http://ckg.de/default#title") {
-        //         console.log("Query Title: " + quad.object.value)
-        //     }
-        // }
+        await storage.loadFile(queryName)
     }
+
+    // print table for each graph
+    await storage.buildTable();
 }
+
+printAllQueries();
 
 // TODO
 async function runAllQueriesOnProfile(profileName: string) {}
