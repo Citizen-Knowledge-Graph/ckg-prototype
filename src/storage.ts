@@ -51,7 +51,8 @@ class Storage {
         const engine = new QueryEngine()
         let query = `
             PREFIX sh: <http://www.w3.org/ns/shacl#>
-            SELECT ?graph (?path AS ?condition) ?class ?min ?max (?inValue AS ?exact) WHERE {
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            SELECT ?graph (?path AS ?field) ?class ?min ?max (?inValue AS ?exact) ?type WHERE {
                 GRAPH ?graph {
                     ?shape sh:property ?propertyShape .
                     ?propertyShape sh:path ?path .
@@ -62,6 +63,7 @@ class Storage {
                         ?propertyShape sh:in ?inList . 
                         ?inList rdf:rest*/rdf:first ?inValue .
                     }
+                    OPTIONAL { ?propertyShape sh:hasValue ?type . }
                 }
             }`
         let bindingsStream = await engine.queryBindings(query, {sources: [this.data]})
@@ -77,9 +79,9 @@ class Storage {
             groupedByGraph[graph].push(binding);
         });
 
-        const headers = ["condition", "class", "min", "max", "exact"]
+        const headers = ["field", "class", "min", "max", "exact", "type"]
         Object.entries(groupedByGraph).forEach(([graph, bindingsForGraph]) => {
-            console.log(`Results for file (graph): ${graph}`);
+            console.log(`Rules for file: ${graph}`);
 
             const rows = bindingsForGraph.map((binding: any) => {
                 return headers.map(header => {
