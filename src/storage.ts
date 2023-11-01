@@ -6,6 +6,7 @@ import {QueryEngine} from "@comunica/query-sparql-rdfjs"
 // @ts-ignore
 import Table from "cli-table3"
 import { getFilenameFromPath } from "./utils.js";
+import path from "path";
 
 const { quad } = DataFactory;
 
@@ -36,7 +37,7 @@ class Storage {
         console.log("Loading file:", filePath)
         const parser = new N3Parser();
         const rdfStream = fs.createReadStream(filePath);
-        const filename = getFilenameFromPath(filePath);
+        const filename = path.basename(filePath, ".ttl")
 
         return new Promise<any[]>((resolve, reject) => {
             const quads: any[] | PromiseLike<any[]> = [];
