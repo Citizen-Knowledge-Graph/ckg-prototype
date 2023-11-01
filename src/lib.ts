@@ -3,10 +3,13 @@ import {
     createProfileReport,
     loadToShapes,
     prettyPrintCombinedReport,
-    prettyPrintReport
+    prettyPrintReport,
+    ValidationReport
 } from "./validator.js";
 import path from "path";
 import storage from "./storage.js";
+// @ts-ignore
+import rdf from 'rdf-ext';
 
 
 export async function printAllQueries() {
@@ -46,14 +49,14 @@ export async function runAllQueriesOnProfile(profileName: string) {
 
     // load shapes from all query files
     const queryPaths = await readFiles("db/queries")
-    const shapes = await Promise.all(queryPaths.map(async queryPath =>
+    const queries: [string, rdf.dataset][] = await Promise.all(queryPaths.map(async queryPath =>
         [path.basename(queryPath, ".ttl"), await loadToShapes(queryPath)]
     ))
 
     // create collection of reports
     const reports = await Promise.all(
-        shapes.map(async shape => {
-            return [shape[0], await createProfileReport(shape[1], profile)]
+        queries.map(async (query):  Promise<[string, ValidationReport]> => {
+            return [query[0], await createProfileReport(query[1], profile)]
         })
     );
 
