@@ -11,16 +11,10 @@ import Storage from "./storage.js";
 
 export async function printAllQueries() {
     const storage = new Storage();
-
-    // load all file paths in db/queries
     const queryPaths = await readFiles("db/queries")
-
-    // import files to storage
     for (const queryPath of queryPaths) {
         await storage.loadFile(queryPath)
     }
-
-    // print table for each graph
     await storage.buildTable();
 }
 
@@ -28,6 +22,7 @@ export async function runQueryOnProfile(queryName: string, profileName: string) 
     const profile = await factory.dataset().import(factory.fromFile(`db/profiles/${profileName}.ttl`))
     if (!hasTypeDeclaration(profile, profileName)) return
 
+    // extract the validation part into helper method TODO
     const query = await factory.dataset().import(factory.fromFile(`db/queries/${queryName}.ttl`))
     const validator = new SHACLValidator(query, {factory})
     const report = validator.validate(profile)
@@ -65,9 +60,6 @@ export async function runQueryOnProfile(queryName: string, profileName: string) 
 }
 
 export async function runAllQueriesOnProfile(profileName: string) {
-    // Show table: one query per row. Columns: query name, # of violations, # of missing data points
-    // Print summary: # of eligible queries, # of non-eligible queries, # of queries with missing data points
-
     const profile = await factory.dataset().import(factory.fromFile(`db/profiles/${profileName}.ttl`))
     if (!hasTypeDeclaration(profile, profileName)) return
 
