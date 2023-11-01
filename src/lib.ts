@@ -38,7 +38,7 @@ export async function runQueryOnProfile(queryName: string, profileName: string) 
     const table = new Table({ head: ["instance", "field", "violation", "is-value", "threshold-value"] })
 
     for (const result of report.results) {
-        let thresholdValue = result.message[0].value // extract this via SPARQL? TODO
+        let thresholdValue = result.message.length > 0 ? result.message[0].value : "" // extract this via SPARQL? TODO
         let path = result.path.value.split('#')[1] // e.g. houseAge
         let focusNode = result.focusNode.value.split('#')[1] // e.g. House1
         let constraint = result.sourceConstraintComponent.value.split('#')[1]
@@ -61,7 +61,7 @@ export async function runQueryOnProfile(queryName: string, profileName: string) 
         table.push([focusNode, path, violationType, value, thresholdValue])
     }
 
-    console.log(table.toString())
+    if (table.length > 0) console.log(table.toString())
 }
 
 export async function runAllQueriesOnProfile(profileName: string) {

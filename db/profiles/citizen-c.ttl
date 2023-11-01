@@ -2,4 +2,9 @@
 
 ckg:this a ckg:CitizenProfile .
 
-ckg:citizen-c a ckg:Person, ckg:Citizen .
+ckg:citizen-c a ckg:Person, ckg:Citizen ;
+              ckg:rents ckg:FlatA ;
+              ckg:monthlyIncome 1800 .
+
+ckg:FlatA a ckg:Flat ;
+          ckg:livingArea 50 .
