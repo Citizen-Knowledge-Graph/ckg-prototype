@@ -5,6 +5,7 @@ import fs from "fs";
 import {QueryEngine} from "@comunica/query-sparql-rdfjs"
 // @ts-ignore
 import Table from "cli-table3"
+import { getFilenameFromPath } from "./utils.js";
 
 const { quad } = DataFactory;
 
@@ -26,24 +27,31 @@ class Storage {
         return Storage._instance;
     }
 
-    async loadFile(filename: string) {
+    async loadFile(filePath: string) {
+        console.log("Loading file:", filePath)
         const parser = new N3Parser();
-        const rdfStream = fs.createReadStream(filename);
-        console.log("Loading file:", filename)
+        const rdfStream = fs.createReadStream(filePath);
+        const filename = getFilenameFromPath(filePath);
 
-        return new Promise<void>((resolve, reject) => {
+        return new Promise<any[]>((resolve, reject) => {
+            const quads: any[] | PromiseLike<any[]> = [];
             parser.parse(rdfStream, (error: any, newQuad: any, prefixes: any) => {
                 if (error) {
                     console.error(error);
                     reject(error);
                 } else
                 if (newQuad) {
-                    this.data.add(quad(newQuad.subject, newQuad.predicate, newQuad.object, filename));
+                    quads.push(quad(newQuad.subject, newQuad.predicate, newQuad.object, filename))
                 } else {
-                    resolve();
+                    resolve(quads);
                 }
             });
         });
+    }
+
+    async storeFile(filePath: string) {
+        const quads = await this.loadFile(filePath);
+        this.data.addQuads(quads);
     }
 
     // this looks pretty chaotic - would require some more work to make it readable

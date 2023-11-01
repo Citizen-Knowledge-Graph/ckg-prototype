@@ -21,3 +21,13 @@ export function hasTypeDeclaration(data: any, profileName: string): boolean {
     if (!exists) console.error("The profile " + profileName + " can't be processed because it does not declare a type.")
     return exists
 }
+
+
+export function getFilenameFromPath(filePath: string) {
+    // Extract the filename from the path
+    let filenameWithExt: string | undefined = filePath.split(/(\/|\\)/).pop(); // handles both forward and backward slashes
+
+    // Remove the file extension
+    if (filenameWithExt)
+        return filenameWithExt.replace(/\.[^/.]+$/, "");
+}

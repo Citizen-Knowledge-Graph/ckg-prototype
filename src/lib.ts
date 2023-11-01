@@ -4,60 +4,34 @@ import SHACLValidator from "rdf-validate-shacl"
 import factory from "@zazuko/env-node"
 // @ts-ignore
 import Table from "cli-table3"
-import path from "path"
-import {hasTypeDeclaration, readFiles} from "./utils.js";
-import Storage from "./storage.js";
+import { hasTypeDeclaration, readFiles } from "./utils.js";
+import {containsExistenceViolation, createProfileReport, loadToShapes, prettyPrintReport} from "./validator.js";
+import path from "path";
+import storage from "./storage.js";
+
 
 
 export async function printAllQueries() {
-    const storage = new Storage();
+    const store = storage.getInstance()
     const queryPaths = await readFiles("db/queries")
-    for (const queryPath of queryPaths) {
-        await storage.loadFile(queryPath)
-    }
-    await storage.buildTable();
+    for (const queryPath of queryPaths) { await store.loadFile(queryPath) }
+    await store.buildTable();
 }
 
 export async function runQueryOnProfile(queryName: string, profileName: string) {
-    const profile = await factory.dataset().import(factory.fromFile(`db/profiles/${profileName}.ttl`))
+
+    // load query file
+    const shapes = await loadToShapes(`db/queries/${queryName}.ttl`)
+
+    // load profile file
+    const profile = await loadToShapes(`db/profiles/${profileName}.ttl`)
     if (!hasTypeDeclaration(profile, profileName)) return
 
-    // extract the validation part into helper method TODO
-    const query = await factory.dataset().import(factory.fromFile(`db/queries/${queryName}.ttl`))
-    const validator = new SHACLValidator(query, {factory})
-    const report = validator.validate(profile)
-    // console.log(await report.dataset.serialize({ format: "text/n3" }))
-
-    console.log("--> " + profileName + " is" + (report.conforms ? " " : " NOT ") + "eligible for " + queryName)
-
-    const table = new Table({ head: ["instance", "field", "violation", "is-value", "threshold-value"] })
-
-    for (const result of report.results) {
-        let thresholdValue = result.message.length > 0 ? result.message[0].value : "" // extract this via SPARQL? TODO
-        let path = result.path.value.split('#')[1] // e.g. houseAge
-        let focusNode = result.focusNode.value.split('#')[1] // e.g. House1
-        let constraint = result.sourceConstraintComponent.value.split('#')[1]
-        let value = result.value ? result.value.value : ""
-        let msg = path + " of " + focusNode + (result.value ? (" is " + result.value.value) : " does not exist ")
-        let violationType
-        if (constraint === "MaxInclusiveConstraintComponent") {
-            violationType = "max"
-            msg += ", which is over the maximum of " + thresholdValue
-        }
-        if (constraint === "MinInclusiveConstraintComponent") {
-            violationType = "min"
-            msg += ", which is below the minimum of " + thresholdValue
-        }
-        if (constraint === "MinCountConstraintComponent") {
-            violationType = "existence"
-            thresholdValue = ""
-        }
-        console.log(msg)
-        table.push([focusNode, path, violationType, value, thresholdValue])
-    }
-
-    if (table.length > 0) console.log(table.toString())
+    const report = await createProfileReport(shapes, profile)
+    await prettyPrintReport(report, profileName, queryName)
 }
+
+void runQueryOnProfile("citizen-solar-funding", "citizen-a")
 
 export async function runAllQueriesOnProfile(profileName: string) {
     const profile = await factory.dataset().import(factory.fromFile(`db/profiles/${profileName}.ttl`))
@@ -87,15 +61,7 @@ export async function runAllQueriesOnProfile(profileName: string) {
     console.log("For more details, run for instance \"npm start run-query-on-profile citizen-solar-funding " + profileName + "\"")
 }
 
-function containsExistenceViolation(report: any) {
-    for (const result of report.results) {
-        if (result.sourceConstraintComponent.value.split('#')[1] === "MinCountConstraintComponent") {
-            return true
-        }
-    }
-    return false
-}
-
+// TODO
 async function runAllQueriesOnAllProfiles() {}
 function createProfile() {}
 function createQuery() {}
