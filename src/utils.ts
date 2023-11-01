@@ -16,6 +16,8 @@ export async function readFiles(directory: string): Promise<string[]> {
 
 // SHACL can't seem to be used to ensure this triple exists, only when it exists it can be validated.
 // So this is the workaround to ensure a root-triple. SHACL can then take it from there.
-export function hasTypeDeclaration(data: any): boolean {
-    return Array.from(data).some((quad: any) => quad.subject.value === PREFIX.CKG + "this" && quad.predicate.value === PREFIX.RDF + "type")
+export function hasTypeDeclaration(data: any, profileName: string): boolean {
+    let exists = Array.from(data).some((quad: any) => quad.subject.value === PREFIX.CKG + "this" && quad.predicate.value === PREFIX.RDF + "type")
+    if (!exists) console.error("The profile " + profileName + " can't be processed because it does not declare a type.")
+    return exists
 }

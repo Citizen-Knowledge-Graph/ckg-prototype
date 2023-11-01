@@ -10,9 +10,7 @@ npm run build
 ## Run
 
 ```sh
+npm start print-all-queries
+npm start run-all-queries-on-profile citizen-a
 npm start run-query-on-profile citizen-solar-funding citizen-a
-npm start run-query-on-profile citizen-solar-funding citizen-b
-npm start run-query-on-profile citizen-solar-funding citizen-c
-npm start run-query-on-profile municipality-sport-field-funding municipality-a
-npm start run-query-on-profile ngo-sustainability-funding ngo-a 
 ```

@@ -1,8 +1,9 @@
-import { runQueryOnProfile, printAllQueries } from "../src/lib.js"
+import { printAllQueries, runQueryOnProfile, runAllQueriesOnProfile } from "../src/lib.js"
 
 const commands: { [key: string] : (...args: string[]) => void } = {
+    "print-all-queries": printAllQueries,
     "run-query-on-profile": runQueryOnProfile,
-    "print-all-queries": printAllQueries
+    "run-all-queries-on-profile": runAllQueriesOnProfile
 }
 
 const [, , command, ...args] = process.argv
