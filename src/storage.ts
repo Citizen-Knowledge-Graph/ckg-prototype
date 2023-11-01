@@ -27,6 +27,11 @@ class Storage {
         return Storage._instance;
     }
 
+    /**
+     * Loads a turtl file and returns array of quads.
+     *
+     * @param filePath Path to file.
+     */
     async loadFile(filePath: string) {
         console.log("Loading file:", filePath)
         const parser = new N3Parser();
@@ -49,12 +54,19 @@ class Storage {
         });
     }
 
+    /**
+     * Persists file to storage.
+     *
+     * @param filePath Path to file.
+     */
     async storeFile(filePath: string) {
         const quads = await this.loadFile(filePath);
         this.data.addQuads(quads);
     }
 
-    // this looks pretty chaotic - would require some more work to make it readable
+    /**
+     * Prints entire storage to prettified table.
+     */
     async buildTable() {
         const engine = new QueryEngine()
         let query = `

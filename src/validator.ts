@@ -1,4 +1,3 @@
-import Storage from "./storage.js";
 // @ts-ignore
 import rdf from 'rdf-ext';
 // @ts-ignore
@@ -8,24 +7,34 @@ import factory from "@zazuko/env-node"
 import storage from "./storage.js";
 // @ts-ignore
 import Table from "cli-table3";
-import {hasTypeDeclaration} from "./utils";
 
-// load data to shape
+/**
+ * Loads data from filepath to a shapes object. Shapes object is used to validate profiles.
+ */
 export async function loadToShapes(filepath: string) {
     const store = storage.getInstance()
     const quads = await store.loadFile(filepath)
     return rdf.dataset(quads)
 }
 
+/**
+ * Returns validator object
+ */
 async function createValidator(shapes: any) {
     return new SHACLValidator(shapes, { factory })
 }
 
+/**
+ * Create report for profile
+ */
 export async function createProfileReport(shapes: any, profile: any) {
     const validator = await createValidator(shapes)
     return validator.validate(profile)
 }
 
+/**
+ * Create pretty report output for profile and a set of constraints
+ */
 export async function prettyPrintReport(report: any, profileName: string, queryName: string) {
     console.log("--> " + profileName + " is" + (report.conforms ? " " : " NOT ") + "eligible for " + queryName)
 
@@ -57,6 +66,29 @@ export async function prettyPrintReport(report: any, profileName: string, queryN
         table.push([focusNode, path, violationType, value, thresholdValue])
     }
     if (table.length > 0) console.log(table.toString())
+}
+
+/**
+ * Create pretty report output for profile and a multiple constraints
+ */
+export async function prettyPrintCombinedReport(reports: any[][], profileName: string) {
+    const table = new Table({head: ["query", "eligible", "non-eligible", "missing-data"]})
+    for (const [queryName, report] of reports) {
+
+        if (report.conforms) {
+            table.push([queryName, "x", "", ""])
+            continue
+        }
+        if (containsExistenceViolation(report)) {
+            table.push([queryName, "", "", "x"])
+            continue
+        }
+        table.push([queryName, "", "x", ""])
+    }
+
+    console.log("--> Results of running all queries on " + profileName + ":")
+    console.log(table.toString())
+    console.log("For more details, run for instance \"npm start run-query-on-profile citizen-solar-funding " + profileName + "\"")
 }
 
 export function containsExistenceViolation(report: any) {
