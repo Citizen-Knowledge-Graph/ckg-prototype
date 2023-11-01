@@ -20,7 +20,7 @@ export async function loadToShapes(filepath: string) {
 /**
  * Returns validator object
  */
-async function createValidator(shapes: any) {
+function createValidator(shapes: any) {
     return new SHACLValidator(shapes, { factory })
 }
 
@@ -28,7 +28,7 @@ async function createValidator(shapes: any) {
  * Create report for profile
  */
 export async function createProfileReport(shapes: any, profile: any) {
-    const validator = await createValidator(shapes)
+    const validator = createValidator(shapes)
     return validator.validate(profile)
 }
 
