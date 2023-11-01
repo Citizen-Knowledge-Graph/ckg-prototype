@@ -5,7 +5,6 @@ import fs from "fs";
 import {QueryEngine} from "@comunica/query-sparql-rdfjs"
 // @ts-ignore
 import Table from "cli-table3"
-import { getFilenameFromPath } from "./utils.js";
 import path from "path";
 
 const { quad } = DataFactory;
