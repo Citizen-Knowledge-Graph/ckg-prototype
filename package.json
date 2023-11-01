@@ -6,7 +6,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "tsc && node cli/cli.js"
+    "start": "tsc && node cli/cli.js",
+    "test": "tsc && mocha"
   },
   "main": "ckg.js",
   "type": "module",
@@ -17,5 +18,11 @@
     "n3": "^1.17.2",
     "rdf-ext": "^2.4.0",
     "rdf-validate-shacl": "^0.5.1"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.3",
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0",
+    "ts-node": "^10.9.1"
   }
 }
