@@ -6,8 +6,9 @@
   },
   "scripts": {
     "build": "tsc",
+    "babel-build": "babel src -d lib",
     "start": "tsc && node cli/cli.js",
-    "test": "tsc && mocha"
+    "test": "jest"
   },
   "main": "ckg.js",
   "type": "module",
@@ -20,6 +21,10 @@
     "rdf-validate-shacl": "^0.5.1"
   },
   "devDependencies": {
+    "@babel/cli": "^7.23.0",
+    "@babel/core": "^7.23.2",
+    "@babel/preset-env": "^7.23.2",
+    "@babel/preset-typescript": "^7.23.2",
     "@types/jest": "^29.5.7",
     "@types/mocha": "^10.0.3",
     "chai": "^4.3.10",
