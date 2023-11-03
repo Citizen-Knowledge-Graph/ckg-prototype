@@ -15,7 +15,7 @@ import storage from './storage.js';
 jest.mock('rdf-ext');
 jest.mock('rdf-validate-shacl');
 jest.mock('@zazuko/env-node');
-jest.mock('./storage.js');
+jest.mock('../src/storage.js');
 
 describe('Validation Utils', () => {
 
@@ -31,7 +31,7 @@ describe('Validation Utils', () => {
         it('should load data from the given file path and return a dataset', async () => {
             // Arrange
             const filepath = 'path/to/shapes/file';
-            const mockQuads; // Mock the quad data as needed
+            const mockQuads = rdf.dataset();
             storage.getInstance.mockReturnValue({
                 loadFile: jest.fn().mockResolvedValue(mockQuads),
             });
