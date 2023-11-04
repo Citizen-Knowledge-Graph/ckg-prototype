@@ -47,7 +47,7 @@ export async function createProfileReport(shapes: rdf.Dataset, profile: rdf.Data
 /**
  * Create pretty report output for profile and a set of constraints
  */
-export async function prettyPrintReport(report: ValidationReport, profileName: string, queryName: string): Promise<void> {
+export function prettyPrintReport(report: ValidationReport, profileName: string, queryName: string) {
     console.log(`--> ${profileName} is ${report.conforms ? '' : 'NOT '}eligible for ${queryName}`);
 
     const headers = ['Instance', 'Field', 'Violation', 'Is-Value', 'Threshold-Value'];
@@ -89,7 +89,7 @@ export async function prettyPrintReport(report: ValidationReport, profileName: s
 /**
  * Create pretty report output for profile and a multiple constraints
  */
-export async function prettyPrintCombinedReport(reports: [string, ValidationReport][], profileName: string): Promise<void> {
+export function prettyPrintCombinedReport(reports: [string, ValidationReport][], profileName: string) {
     const table = new Table({ head: ['Query', 'Eligible', 'Non-eligible', 'Missing-data'] });
 
     for (const [queryName, report] of reports) {

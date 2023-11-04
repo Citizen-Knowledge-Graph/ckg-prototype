@@ -38,7 +38,7 @@ export async function runQueryOnProfile(queryName: string, profileName: string) 
     const report = await createProfileReport(shapes, profile)
 
     // print report
-    await prettyPrintReport(report, profileName, queryName)
+    prettyPrintReport(report, profileName, queryName)
 }
 
 export async function runAllQueriesOnProfile(profileName: string) {
@@ -60,8 +60,8 @@ export async function runAllQueriesOnProfile(profileName: string) {
         })
     );
 
-    // print combined report
-    await prettyPrintCombinedReport(reports, profileName)
+    // print combined reports
+    prettyPrintCombinedReport(reports, profileName)
 }
 
 // TODO
