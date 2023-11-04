@@ -110,3 +110,15 @@ export function prettyPrintCombinedReport(reports: [string, ValidationReport][],
 export function containsExistenceViolation(report: ValidationReport): boolean {
     return report.results.some(result => extractValue(result.sourceConstraintComponent.value) === 'MinCountConstraintComponent');
 }
+
+export function prettyPrintMissingDataAnalysis(reports: [string, ValidationReport][], profileName: string) {
+    for (const [queryName, report] of reports) {
+        if (report.conforms || !containsExistenceViolation(report)) continue;
+        for (const result of report.results) {
+            if (extractValue(result.sourceConstraintComponent.value) !== 'MinCountConstraintComponent') continue;
+
+            // TODO
+        }
+    }
+}
+

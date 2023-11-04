@@ -2,6 +2,7 @@ import {hasTypeDeclaration, readFiles} from "./utils.js";
 import {
     createProfileReport,
     loadToShapes,
+    prettyPrintMissingDataAnalysis,
     prettyPrintCombinedReport,
     prettyPrintReport,
     ValidationReport
@@ -59,6 +60,9 @@ export async function runAllQueriesOnProfile(profileName: string) {
             return [query[0], await createProfileReport(query[1], profile)]
         })
     );
+
+    // analyze missing-data across reports
+    prettyPrintMissingDataAnalysis(reports, profileName)
 
     // print combined reports
     prettyPrintCombinedReport(reports, profileName)
