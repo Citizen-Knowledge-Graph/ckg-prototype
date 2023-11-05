@@ -7,6 +7,9 @@ import factory from "@zazuko/env-node"
 import storage from "./storage.js";
 // @ts-ignore
 import Table from "cli-table3";
+// @ts-ignore
+import { DataFactory, Writer as N3Writer } from "n3"
+const { quad } = DataFactory;
 
 // Define TypeScript types for the shape and report objects
 export interface ValidationReport { conforms: boolean; results: Result[]; }
@@ -111,14 +114,25 @@ export function containsExistenceViolation(report: ValidationReport): boolean {
     return report.results.some(result => extractValue(result.sourceConstraintComponent.value) === 'MinCountConstraintComponent');
 }
 
-export function prettyPrintMissingDataAnalysis(reports: [string, ValidationReport][], profileName: string) {
-    for (const [queryName, report] of reports) {
+export async function prettyPrintMissingDataAnalysis(profileName: string, queryReports: any) {
+    for (const [queryName, queryReport] of Object.entries(queryReports)) {
+        // @ts-ignore
+        let report = queryReport.report;
         if (report.conforms || !containsExistenceViolation(report)) continue;
-        for (const result of report.results) {
-            if (extractValue(result.sourceConstraintComponent.value) !== 'MinCountConstraintComponent') continue;
 
-            // TODO
+        // @ts-ignore
+        let query = queryReport.query;
+        const writer = new N3Writer(); // TODO use store instead to run SPARQL queries on it
+        // @ts-ignore
+        for (const q of report.dataset._quads) {
+            writer.addQuad(quad(q[1].subject, q[1].predicate, q[1].object));
         }
+        for (const q of query._quads) {
+            writer.addQuad(quad(q[1].subject, q[1].predicate, q[1].object));
+        }
+        // @ts-ignore
+       writer.end((error, result) => console.log(result));
     }
-}
 
+    // TODO
+}
