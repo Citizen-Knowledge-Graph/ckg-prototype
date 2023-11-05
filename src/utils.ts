@@ -1,17 +1,14 @@
 import path from "path";
 import fs from "fs/promises";
 
-import {ROOT_PATH} from "./config.js";
-
 const PREFIX = {
     RDF: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     CKG: "http://ckg.de/default#",
 }
 
 export async function readFiles(directory: string): Promise<string[]> {
-    const directoryPath: string = path.join(ROOT_PATH, directory);
-    const fileNames = await fs.readdir(directoryPath)
-    return fileNames.map(fileName => path.join(directoryPath, fileName))
+    const fileNames = await fs.readdir(directory)
+    return fileNames.map(fileName => path.join(directory, fileName))
 }
 
 // SHACL can't seem to be used to ensure this triple exists, only when it exists it can be validated.
