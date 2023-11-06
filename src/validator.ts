@@ -8,7 +8,9 @@ import storage from "./storage.js";
 // @ts-ignore
 import Table from "cli-table3";
 // @ts-ignore
-import { DataFactory, Writer as N3Writer } from "n3"
+import { DataFactory, Store as N3Store } from "n3"
+// @ts-ignore
+import { QueryEngine } from "@comunica/query-sparql-rdfjs"
 const { quad } = DataFactory;
 
 // Define TypeScript types for the shape and report objects
@@ -114,25 +116,43 @@ export function containsExistenceViolation(report: ValidationReport): boolean {
     return report.results.some(result => extractValue(result.sourceConstraintComponent.value) === 'MinCountConstraintComponent');
 }
 
-export async function prettyPrintMissingDataAnalysis(profileName: string, queryReports: any) {
-    for (const [queryName, queryReport] of Object.entries(queryReports)) {
-        // @ts-ignore
-        let report = queryReport.report;
-        if (report.conforms || !containsExistenceViolation(report)) continue;
+export async function prettyPrintMissingDataAnalysis(reports: [string, ValidationReport][], profileName: string) {
+    const engine = new QueryEngine()
+    let missingDataMap = {}
 
+    for (const [queryName, report] of reports) {
+        if (report.conforms) continue;
+        let relevantResults = report.results.filter(result => extractValue(result.sourceConstraintComponent.value) === 'MinCountConstraintComponent');
+        if (relevantResults.length === 0) continue;
         // @ts-ignore
-        let query = queryReport.query;
-        const writer = new N3Writer(); // TODO use store instead to run SPARQL queries on it
+        missingDataMap[queryName] = []
+        let store = new N3Store();
         // @ts-ignore
         for (const q of report.dataset._quads) {
-            writer.addQuad(quad(q[1].subject, q[1].predicate, q[1].object));
+            store.add(quad(q[1].subject, q[1].predicate, q[1].object));
         }
-        for (const q of query._quads) {
-            writer.addQuad(quad(q[1].subject, q[1].predicate, q[1].object));
+        for (let result of relevantResults) {
+            let sparqlQuery = `
+            PREFIX sh: <http://www.w3.org/ns/shacl#>
+            SELECT ?class ?datatype WHERE {
+                ?shape sh:focusNode <${result.focusNode.id}> .
+                ?shape sh:resultPath <${result.path.id}> .
+                ?shape sh:sourceShape ?sourceShape .
+                OPTIONAL { ?sourceShape sh:class ?class . }
+                OPTIONAL { ?sourceShape sh:datatype ?datatype . }
+            }`
+            let bindingsStream = await engine.queryBindings(sparqlQuery, {sources: [store]})
+            let bindings = await bindingsStream.toArray()
+            for (let binding of bindings) {
+                let type
+                if (binding.has("class")) type = "class"
+                if (binding.has("datatype")) type = "datatype"
+                // @ts-ignore
+                missingDataMap[queryName].push(extractValue(result.path.value) + "(" + extractValue(binding.get(type).value) + ")")
+            }
         }
-        // @ts-ignore
-       writer.end((error, result) => console.log(result));
     }
 
+    console.log(missingDataMap)
     // TODO
 }

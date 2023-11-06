@@ -61,17 +61,7 @@ export async function runAllQueriesOnProfile(profileName: string) {
         })
     );
 
-    // analyze missing-data across reports
-    // unfortunately both the validation reports and their original SHACL shapes are needed for that
-    const queryReports = {}
-    for (let i = 0; i < reports.length; i++) {
-        // @ts-ignore
-        queryReports[reports[i][0]] = {
-            report: reports[i][1],
-            query: queries[i][1]
-        }
-    }
-    // await prettyPrintMissingDataAnalysis(profileName, queryReports)
+    await prettyPrintMissingDataAnalysis(reports, profileName)
 
     // print combined reports
     prettyPrintCombinedReport(reports, profileName)
