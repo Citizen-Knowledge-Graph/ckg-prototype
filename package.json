@@ -20,8 +20,12 @@
     "rdf-validate-shacl": "^0.5.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.23.2",
+    "@babel/preset-env": "^7.23.2",
+    "@babel/preset-typescript": "^7.23.2",
     "@types/jest": "^29.5.7",
     "@types/mocha": "^10.0.3",
+    "babel-jest": "^29.7.0",
     "chai": "^4.3.10",
     "jest": "^29.7.0",
     "mocha": "^10.2.0",
