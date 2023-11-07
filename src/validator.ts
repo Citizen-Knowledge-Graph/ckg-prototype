@@ -107,9 +107,9 @@ export function prettyPrintCombinedReport(reports: [string, ValidationReport][],
         table.push(eligibilityRow);
     }
 
-    console.log(`--> Results of running all queries on ${profileName}:`);
+    console.log(`\n--> Results of running all queries on ${profileName}:`);
     console.log(table.toString());
-    console.log(`For more details, run for instance "npm start run-query-on-profile citizen-solar-funding ${profileName}"`);
+    console.log(`For more details, run for instance: "npm start run-query-on-profile citizen-solar-funding ${profileName}"`);
 }
 
 export function containsExistenceViolation(report: ValidationReport): boolean {
@@ -118,19 +118,19 @@ export function containsExistenceViolation(report: ValidationReport): boolean {
 
 export async function prettyPrintMissingDataAnalysis(reports: [string, ValidationReport][], profileName: string) {
     const engine = new QueryEngine()
-    let missingDataMap = {}
+    const missingDataMap: Record<string, string[]> = {}; // key: array of missing-data identifiers, value: array of queryNames where this occurred
 
     for (const [queryName, report] of reports) {
         if (report.conforms) continue;
         let relevantResults = report.results.filter(result => extractValue(result.sourceConstraintComponent.value) === 'MinCountConstraintComponent');
         if (relevantResults.length === 0) continue;
-        // @ts-ignore
-        missingDataMap[queryName] = []
         let store = new N3Store();
         // @ts-ignore
         for (const q of report.dataset._quads) {
             store.add(quad(q[1].subject, q[1].predicate, q[1].object));
         }
+        const missingDataIdentifiers = []
+
         for (let result of relevantResults) {
             let sparqlQuery = `
             PREFIX sh: <http://www.w3.org/ns/shacl#>
@@ -147,12 +147,19 @@ export async function prettyPrintMissingDataAnalysis(reports: [string, Validatio
                 let type
                 if (binding.has("class")) type = "class"
                 if (binding.has("datatype")) type = "datatype"
-                // @ts-ignore
-                missingDataMap[queryName].push(extractValue(result.path.value) + "(" + extractValue(binding.get(type).value) + ")")
+                missingDataIdentifiers.push(extractValue(result.path.value) + "(" + extractValue(binding.get(type).value) + ")")
             }
         }
+
+        const keyStr = missingDataIdentifiers.sort().join(",");
+        if (!missingDataMap[keyStr]) missingDataMap[keyStr] = []
+        missingDataMap[keyStr].push(queryName)
     }
 
-    console.log(missingDataMap)
-    // TODO
+    // sort them by length of value array? or by a score calculating how useful it would be to fix this missing data?
+    for (const [keyStr, values] of Object.entries(missingDataMap)) {
+        let missingDataIdentifiers = keyStr.split(",");
+        console.log(`\nIf you add these ${missingDataIdentifiers.length} data point${missingDataIdentifiers.length > 1 ? "s" : ""}, I can check your eligibility for ${values.length} more quer${values.length > 1 ? "ies" : "y"}:`)
+        console.log(missingDataIdentifiers, " --> ", values, "\n")
+    }
 }
