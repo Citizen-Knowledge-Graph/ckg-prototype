@@ -1,0 +1,16 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ckg: <http://ckg.de/default#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ckg:ChildAllowanceEligibilityShape
+    a sh:NodeShape ;
+    sh:targetClass ckg:Person ;
+    sh:property [
+                    sh:path ckg:hasChildren ;
+                    sh:minCount 1 ;
+                ] ;
+    sh:property [
+                    sh:path ckg:monthlyIncome ;
+                    sh:maxInclusive 2000 ;
+                    sh:datatype xsd:integer ;
+                ] .

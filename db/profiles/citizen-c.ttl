@@ -1,10 +1,13 @@
 @prefix ckg: <http://ckg.de/default#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 
 ckg:this a ckg:CitizenProfile .
 
-ckg:citizen-c a ckg:Person, ckg:Citizen ;
-              ckg:rents ckg:FlatA ;
-              ckg:monthlyIncome 1800 .
-
 ckg:FlatA a ckg:Flat ;
           ckg:livingArea 50 .
+
+ckg:citizen-c a ckg:Person, ckg:Citizen ;
+              ckg:rents ckg:FlatA ;
+              ckg:monthlyIncome 1800 ;
+              ckg:hasResidence "Munich" ;
+              ckg:hasChildren 1 .

@@ -6,4 +6,8 @@ ckg:HouseB a ckg:House ;
            ckg:houseAge 25 .
 
 ckg:citizen-b a ckg:Person, ckg:Citizen ;
-              ckg:owns ckg:HouseB .
+              ckg:owns ckg:HouseB ;
+              ckg:hasBirthday "2005-10-20"^^xsd:date ;
+              ckg:hasResidence "Hamburg" ;
+              ckg:hasDrivingLicense false ;
+              ckg:hasChildren 0 .
