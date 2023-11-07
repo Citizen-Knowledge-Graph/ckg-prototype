@@ -159,7 +159,7 @@ export async function prettyPrintMissingDataAnalysis(reports: [string, Validatio
     // sort them by length of value array? or by a score calculating how useful it would be to fix this missing data?
     for (const [keyStr, values] of Object.entries(missingDataMap)) {
         let missingDataIdentifiers = keyStr.split(",");
-        console.log(`\nIf you add these ${missingDataIdentifiers.length} data point${missingDataIdentifiers.length > 1 ? "s" : ""}, I can check your eligibility for ${values.length} more quer${values.length > 1 ? "ies" : "y"}:`)
+        console.log(`\nIf you add ${missingDataIdentifiers.length > 1 ? "these" : "this"} ${missingDataIdentifiers.length} data point${missingDataIdentifiers.length > 1 ? "s" : ""}, I can check your eligibility for ${values.length} more quer${values.length > 1 ? "ies" : "y"}:`)
         console.log(missingDataIdentifiers, " --> ", values, "\n")
     }
 }
