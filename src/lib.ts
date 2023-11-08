@@ -65,7 +65,7 @@ export async function runAllQueriesOnProfile(profileName: string) {
     prettyPrintCombinedReport(reports, profileName)
 
     // print missing data analysis
-    await prettyPrintMissingDataAnalysis(reports, profileName)
+    await prettyPrintMissingDataAnalysis(reports)
 }
 
 function createProfile() {}
