@@ -59,7 +59,7 @@ export function prettyPrintReport(report: ValidationReport, profileName: string,
     const table = new Table({ head: headers });
 
     report.results.forEach((result) => {
-        const thresholdValue = result.message[0].value;
+        const thresholdValue = result.message[0]?result.message[0].value : "No threshold value found";
         const path = extractValue(result.path.value);
         const focusNode = extractValue(result.focusNode.value);
         const constraint = extractValue(result.sourceConstraintComponent.value);
