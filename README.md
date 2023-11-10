@@ -1,4 +1,8 @@
-# CKG CLI
+# CLI for the Citizen Knowledge Graph project
+
+More info [here](https://citizen-knowledge-graph.github.io/ckg-site/).
+
+User profiles in RDF Turtle format are getting validated by SHACL shapes that represent the eligibility criteria for different funding opportunities.
 
 ## Setup
 
@@ -13,4 +17,59 @@ npm run build
 npm start print-all-queries
 npm start run-all-queries-on-profile citizen-a
 npm start run-query-on-profile citizen-solar-funding citizen-a
+```
+
+## Functionality
+
+#### List the rules from all queries
+
+```
+Rules from SHACL file: ngo-sustainability-funding
+┌───────────┬───────┬─────┬─────┬────────────────┬────────────┐
+│ field     │ class │ min │ max │ exact          │ type       │
+├───────────┼───────┼─────┼─────┼────────────────┼────────────┤
+│ type      │       │     │     │                │ NGOProfile │
+├───────────┼───────┼─────┼─────┼────────────────┼────────────┤
+│ employees │       │ 10  │     │                │            │
+├───────────┼───────┼─────┼─────┼────────────────┼────────────┤
+│ focusArea │       │     │     │ Sustainability │            │
+├───────────┼───────┼─────┼─────┼────────────────┼────────────┤
+│ location  │       │     │     │ Berlin         │            │
+└───────────┴───────┴─────┴─────┴────────────────┴────────────┘
+```
+
+#### Run all queries against a profile
+
+```
+Results of running all queries on citizen-b:
+┌─────────────────────────────────┬──────────┬──────────────┬──────────────┐
+│ Query                           │ Eligible │ Non-eligible │ Missing-data │
+├─────────────────────────────────┼──────────┼──────────────┼──────────────┤
+│ citizen-child-allowance         │ x        │              │              │
+├─────────────────────────────────┼──────────┼──────────────┼──────────────┤
+│ citizen-ecar-bonus              │          │ x            │              │
+├─────────────────────────────────┼──────────┼──────────────┼──────────────┤
+│ citizen-insulation-bonus        │          │              │ x            │
+├─────────────────────────────────┼──────────┼──────────────┼──────────────┤
+│ citizen-solar-funding           │          │              │ x            │
+├─────────────────────────────────┼──────────┼──────────────┼──────────────┤
+│ citizen-wohngeld                │          │              │ x            │
+├─────────────────────────────────┼──────────┼──────────────┼──────────────┤
+│ municipality-sportfield-funding │          │ x            │              │
+├─────────────────────────────────┼──────────┼──────────────┼──────────────┤
+│ ngo-sustainability-funding      │          │ x            │              │
+└─────────────────────────────────┴──────────┴──────────────┴──────────────┘
+```
+
+#### Run a specific query against a profile
+
+```
+citizen-b is NOT eligible for citizen-solar-funding:
+┌──────────┬──────────┬───────────┬──────────┬─────────────────┐
+│ Instance │ Field    │ Violation │ Is-Value │ Threshold-Value │
+├──────────┼──────────┼───────────┼──────────┼─────────────────┤
+│ HouseB   │ roofArea │ existence │          │ 100             │
+├──────────┼──────────┼───────────┼──────────┼─────────────────┤
+│ HouseB   │ houseAge │ max       │ 25       │ 20              │
+└──────────┴──────────┴───────────┴──────────┴─────────────────┘
 ```
