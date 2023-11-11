@@ -149,21 +149,23 @@ export async function prettyPrintMissingDataAnalysis(reports: [string, Validatio
             let bindingsStream = await engine.queryBindings(sparqlQuery, {sources: [store]})
             let bindings: rdf.Bindings = await bindingsStream.toArray()
             for (let binding of bindings) {
-                ["class", "datatype"].map(key => binding.get(key) ? binding.get(key).value : null).filter(Boolean).forEach(type => {
-                    missingDataIdentifiers.push(extractValue(result.path.value) + "(" + extractValue(binding.get(type).value) + ")")
-                })
+                ["class", "datatype"]
+                    .filter(key => binding.has(key))
+                    .forEach(key => {
+                        missingDataIdentifiers.push(extractValue(result.path.value) + "(" + extractValue(binding.get(key).value) + ")");
+                    });
             }
-
-            const keyStr = missingDataIdentifiers.sort().join(",");
-            if (!missingDataMap[keyStr]) missingDataMap[keyStr] = []
-            missingDataMap[keyStr].push(queryName)
         }
 
-        // sort them by length of value array? or by a score calculating how useful it would be to fix this missing data?
-        for (const [keyStr, values] of Object.entries(missingDataMap)) {
-            let missingDataIdentifiers = keyStr.split(",");
-            console.log(`\nIf you add ${missingDataIdentifiers.length > 1 ? "these" : "this"} ${missingDataIdentifiers.length} data point${missingDataIdentifiers.length > 1 ? "s" : ""}, I can check your eligibility for ${values.length} more queries${values.length > 1 ? "ies" : "y"}:`)
-            console.log(missingDataIdentifiers, " --> ", values, "\n")
-        }
+        const keyStr = missingDataIdentifiers.sort().join(",");
+        if (!missingDataMap[keyStr]) missingDataMap[keyStr] = []
+        missingDataMap[keyStr].push(queryName)
+    }
+
+    // sort them by length of value array? or by a score calculating how useful it would be to fix this missing data?
+    for (const [keyStr, values] of Object.entries(missingDataMap)) {
+        let missingDataIdentifiers = keyStr.split(",");
+        console.log(`\nIf you add ${missingDataIdentifiers.length > 1 ? "these" : "this"} ${missingDataIdentifiers.length} data point${missingDataIdentifiers.length > 1 ? "s" : ""}, I can check your eligibility for ${values.length} more quer${values.length > 1 ? "ies" : "y"}:`)
+        console.log(missingDataIdentifiers, " --> ", values, "\n")
     }
 }
