@@ -26,4 +26,11 @@ describe('loadToShapes', () => {
         expect(result).toEqual(expectedDataset);
         // You can add more assertions here to validate specific aspects of the RDF dataset
     });
+
+    // it('should throw an error with an invalid file path', async () => {
+    //     const invalidFilePath = 'path/to/nonexistent/file';
+    //
+    //     // Expect a promise rejection to be thrown when calling the function with an invalid file path
+    //     await expect(loadToShapes(invalidFilePath)).rejects.toThrow();
+    // });
 });

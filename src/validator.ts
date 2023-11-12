@@ -2,14 +2,12 @@
 import rdf from 'rdf-ext';
 // @ts-ignore
 import SHACLValidator from "rdf-validate-shacl"
-// @ts-ignore
 import factory from "@zazuko/env-node"
 import storage from "./storage.js";
 // @ts-ignore
 import Table from "cli-table3";
 // @ts-ignore
 import {DataFactory, Store as N3Store} from "n3"
-// @ts-ignore
 import {QueryEngine} from "@comunica/query-sparql-rdfjs"
 
 const {quad} = DataFactory;

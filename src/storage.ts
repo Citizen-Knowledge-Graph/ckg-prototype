@@ -1,7 +1,6 @@
 // @ts-ignore
 import {Store as N3Store, Parser as N3Parser, DataFactory} from "n3"
 import fs from "fs";
-// @ts-ignore
 import {QueryEngine} from "@comunica/query-sparql-rdfjs"
 // @ts-ignore
 import Table from "cli-table3"
