@@ -60,14 +60,6 @@ describe('Storage class', () => {
                 }
             }));
 
-            // FS Mock
-            const mockReadStream = new Readable({
-                read() {
-                    this.push('some data');
-                    this.push(null);
-                }
-            });
-
             const store = storage.getInstance();
             const validFilePath = `path/to/valid/${filename}.ttl`;
 
