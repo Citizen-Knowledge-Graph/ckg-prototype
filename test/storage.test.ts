@@ -1,7 +1,7 @@
 import storage from '../src/storage'; // replace with your actual import path
 import fs from 'fs';
 // @ts-ignore
-import {Parser as N3Parser} from 'n3';
+import {Parser as N3Parser, DataFactory as N3DataFactory} from 'n3';
 //import path from 'path';
 import {Readable} from 'stream';
 
@@ -13,6 +13,15 @@ jest.mock('n3', () => {
     const actualN3 = jest.requireActual('n3');
     return {
         ...actualN3,
+        DataFactory: {
+            ...actualN3.DataFactory,
+            quad: (subject: any, predicate: any, object: any, graph: any) => ({
+                subject: subject,
+                predicate: predicate,
+                object: object,
+                graph: graph
+            }),
+        },
         Parser: jest.fn()
     }
 });
@@ -22,26 +31,61 @@ jest.mock('@comunica/query-sparql-rdfjs', () => ({
         // Mock methods of QueryEngine here
     })),
 }));
-
-jest.mock('n3');
 //jest.mock('path');
 
 describe('Storage class', () => {
     describe('loadFile method', () => {
-        beforeEach(() => {
-            // Reset the mocks before each test
-            jest.resetAllMocks();
+        it('should resolve with quads for a valid file path', async () => {
+
+            /* Arrange */
+            const filename: string = 'file';
+
+            // N3 Mock
+            N3Parser.mockImplementation(() => ({
+                parse: (rdfStream: any, callback: (arg0: null, arg1: null) => void) => {
+                    // Simulate the parser reading and emitting quads
+                    const mockQuad =
+                        N3DataFactory.quad(
+                            'https://example.org/subject',
+                            'https://example.org/predicate',
+                            '"100"^^http://www.w3.org/2001/XMLSchema#integer',
+                            ""
+                        );
+
+                    // Simulate streaming of quads
+                    callback(null, mockQuad);
+
+                    // Simulate end of stream
+                    callback(null, null);
+                }
+            }));
+
+            // FS Mock
+            const mockReadStream = new Readable({
+                read() {
+                    this.push('some data');
+                    this.push(null);
+                }
+            });
+
+            const store = storage.getInstance();
+            const validFilePath = `path/to/valid/${filename}.ttl`;
+
+            // Assert
+            await expect(store.loadFile(validFilePath)).resolves.toEqual(
+                [
+                    N3DataFactory.quad(
+                        'https://example.org/subject',
+                        'https://example.org/predicate',
+                        '"100"^^http://www.w3.org/2001/XMLSchema#integer',
+                        filename
+                    )
+                ]
+            );
         });
-        // it('should resolve with quads for a valid file path', async () => {
-        //     // Mock fs and N3Parser for a valid file scenario
-        //     // ... (your mock setup for a valid file path)
-        //
-        //     const store = storage.getInstance();
-        //     const validFilePath = 'path/to/valid/file.ttl';
-        //     await expect(store.loadFile(validFilePath)).resolves.toEqual(/* expected quads array */);
-        // });
 
         it('should reject with an error for an invalid file path', async () => {
+            // N3 Mock
             N3Parser.mockImplementation(() => ({
                 parse: (rdfStream: any, callback: (arg0: Error) => void) => {
                     // Simulate an error during parsing
@@ -49,6 +93,7 @@ describe('Storage class', () => {
                 }
             }));
 
+            // FS Mock
             const mockReadStream = new Readable({
                 read() {
                     this.emit('error', new Error('File not found'));
@@ -58,7 +103,7 @@ describe('Storage class', () => {
 
             const store = storage.getInstance();
             const invalidFilePath = 'path/to/invalid/file.ttl';
-            await expect(store.loadFile(invalidFilePath)).rejects.toThrow();
+            await expect(store.loadFile(invalidFilePath)).rejects.toThrow("Parsing error");
         });
     });
 });

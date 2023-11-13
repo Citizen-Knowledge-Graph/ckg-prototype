@@ -41,7 +41,6 @@ class Storage {
             const quads: any[] | PromiseLike<any[]> = [];
             parser.parse(rdfStream, (error: any, newQuad: any, prefixes: any) => {
                 if (error) {
-                    console.error(error);
                     reject(error);
                 } else
                 if (newQuad) {
