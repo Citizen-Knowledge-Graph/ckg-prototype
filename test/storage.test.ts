@@ -42,7 +42,7 @@ describe('Storage class', () => {
 
             // N3 Mock
             N3Parser.mockImplementation(() => ({
-                parse: (rdfStream: any, callback: (arg0: null, arg1: null) => void) => {
+                parse: (_: any, callback: (arg0: null, arg1: null) => void) => {
                     // Simulate the parser reading and emitting quads
                     const mockQuad =
                         N3DataFactory.quad(
