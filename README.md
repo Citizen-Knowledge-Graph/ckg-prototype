@@ -59,6 +59,15 @@ Results of running all queries on citizen-b:
 ├─────────────────────────────────┼──────────┼──────────────┼──────────────┤
 │ ngo-sustainability-funding      │          │ x            │              │
 └─────────────────────────────────┴──────────┴──────────────┴──────────────┘
+
+Missing data analysis:
+
+If you add this 1 data point, I can check your eligibility for 2 more queries:
+roofArea(integer) -->  citizen-insulation-bonus, citizen-solar-funding
+
+If you add these 2 data points, I can check your eligibility for 1 more query:
+monthlyIncome(integer), rents(Flat)  -->  citizen-wohngeld
+
 ```
 
 #### Run a specific query against a profile
