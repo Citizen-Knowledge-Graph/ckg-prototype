@@ -77,7 +77,7 @@ export function prettyPrintCombinedReport(reports: NamedValidationReport[]) {
 }
 
 
-export async function prettyPrintMissingDataAnalysis(reports:NamedValidationReport[]) {
+export async function prettyPrintMissingDataAnalysis(reports: NamedValidationReport[]) {
     const engine = new QueryEngine()
     const missingDataMap: Record<string, string[]> = {}; // key: array of missing-data identifiers, value: array of queryNames where this occurred
 
@@ -87,7 +87,7 @@ export async function prettyPrintMissingDataAnalysis(reports:NamedValidationRepo
         if (relevantResults.length === 0) continue;
         let store = new N3Store();
         // @ts-ignore
-        for (const q of report.dataset._quads) {
+        for (const q of namedReport.report.dataset._quads) {
             store.add(quad(q[1].subject, q[1].predicate, q[1].object));
         }
         const missingDataIdentifiers: string[] = []
