@@ -1,10 +1,10 @@
 // Import the necessary modules
-import { loadToShapes } from '../src/validator'; // Replace with your actual module name
-import storage from '../src/storage';
+import { loadToShapes } from '../../src/validator'; // Replace with your actual module name
+import storage from '../../src/storage';
 // @ts-ignore
 import rdf from 'rdf-ext';
 
-jest.mock('../src/storage', () => ({
+jest.mock('../../src/storage', () => ({
     getInstance: jest.fn().mockReturnValue({
         loadFile: jest.fn().mockImplementation((filepath: string) => {
         }),

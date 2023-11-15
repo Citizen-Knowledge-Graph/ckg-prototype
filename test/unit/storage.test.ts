@@ -1,4 +1,4 @@
-import storage from '../src/storage'; // replace with your actual import path
+import storage from '../../src/storage'; // replace with your actual import path
 import fs from 'fs';
 // @ts-ignore
 import {Parser as N3Parser, DataFactory as N3DataFactory} from 'n3';
