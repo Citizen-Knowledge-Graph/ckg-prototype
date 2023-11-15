@@ -1,5 +1,5 @@
 // Import the necessary modules
-import { loadToShapes } from '../../src/validator'; // Replace with your actual module name
+import { loadToShapes, NamedShape } from '../../src/validator'; // Replace with your actual module name
 import storage from '../../src/storage';
 // @ts-ignore
 import rdf from 'rdf-ext';
@@ -15,7 +15,10 @@ describe('loadToShapes', () => {
     it('should load data from a file and return an RDF dataset', async () => {
         // Arrange
         const filepath = './test/resources/empty.ttl';
-        const expectedDataset = rdf.dataset();
+        const expectedDataset = NamedShape(
+            'empty',
+            rdf.dataset()
+        );
 
         // Act
         const result = await loadToShapes(filepath);

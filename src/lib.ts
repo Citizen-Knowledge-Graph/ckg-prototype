@@ -1,12 +1,14 @@
 import {hasTypeDeclaration, readFiles} from "./utils.js";
 import {
-    createProfileReport,
+    createValidationReport,
     loadToShapes,
+    NamedValidationReport
+} from "./validator.js";
+import {
     prettyPrintMissingDataAnalysis,
     prettyPrintCombinedReport,
-    prettyPrintReport,
-    ValidationReport
-} from "./validator.js";
+    prettyPrintReport
+} from "./view.js";
 import path from "path";
 import storage from "./storage.js";
 // @ts-ignore
@@ -21,7 +23,9 @@ export async function printAllQueries() {
     const queryPaths = await readFiles("db/queries")
 
     // load files to storage
-    for (const queryPath of queryPaths) { await store.storeFile(queryPath) }
+    for (const queryPath of queryPaths) {
+        await store.storeFile(queryPath)
+    }
 
     // print table
     await store.buildTable();
@@ -30,43 +34,44 @@ export async function printAllQueries() {
 export async function runQueryOnProfile(queryName: string, profileName: string) {
     // load profile file without storing
     const profile = await loadToShapes(`db/profiles/${profileName}.ttl`)
-    if (!hasTypeDeclaration(profile, profileName)) return
+    if (!hasTypeDeclaration(profile)) return
 
     // load query file
     const shapes = await loadToShapes(`db/queries/${queryName}.ttl`)
 
     // create report
-    const report = await createProfileReport(shapes, profile)
+    const report = await createValidationReport(shapes, profile)
 
     // print report
-    prettyPrintReport(report, profileName, queryName)
+    prettyPrintReport(report)
 }
 
 export async function runAllQueriesOnProfile(profileName: string) {
 
     // load profile file
     const profile = await loadToShapes(`db/profiles/${profileName}.ttl`)
-    if (!hasTypeDeclaration(profile, profileName)) return
+    if (!hasTypeDeclaration(profile)) return
 
     // load shapes from all query files
     const queryPaths = await readFiles("db/queries")
-    const queries: [string, rdf.dataset][] = await Promise.all(queryPaths.map(async queryPath =>
-        [path.basename(queryPath, ".ttl"), await loadToShapes(queryPath)]
-    ))
+    const queries: rdf.dataset[] = await Promise.all(
+        queryPaths.map(async queryPath => await loadToShapes(queryPath))
+    )
 
     // create collection of reports
     const reports = await Promise.all(
-        queries.map(async (query):  Promise<[string, ValidationReport]> => {
-            return [query[0], await createProfileReport(query[1], profile)]
-        })
+        queries.map(async (query): Promise<NamedValidationReport> => (await createValidationReport(query, profile)))
     );
 
     // print combined reports
-    prettyPrintCombinedReport(reports, profileName)
+    prettyPrintCombinedReport(reports)
 
     // print missing data analysis
     await prettyPrintMissingDataAnalysis(reports)
 }
 
-function createProfile() {}
-function createQuery() {}
+function createProfile() {
+}
+
+function createQuery() {
+}

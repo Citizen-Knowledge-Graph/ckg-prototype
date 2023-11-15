@@ -1,4 +1,4 @@
-import { loadToShapes, createProfileReport } from '../../src/validator'; // Replace with your actual module name
+import { loadToShapes, createValidationReport } from '../../src/validator'; // Replace with your actual module name
 // @ts-ignore
 import rdf from 'rdf-ext';
 
@@ -16,10 +16,10 @@ describe('createProfileReport should create correct reports for citizen-solar-fu
         const profile = await loadToShapes(testProfilePath);
 
         // Perform the validation
-        const validationReport = await createProfileReport(query, profile);
+        const validationReport = await createValidationReport(query, profile);
 
         // Assertions based on expected outcomes
-        expect(validationReport.conforms).toEqual(true);
+        expect(validationReport.report.conforms).toEqual(true);
     });
 
     it('should validate a user profile against SHACL shapes unsuccessfully', async () => {
@@ -28,9 +28,9 @@ describe('createProfileReport should create correct reports for citizen-solar-fu
         const profile = await loadToShapes(testProfilePath);
 
         // Perform the validation
-        const validationReport = await createProfileReport(query, profile);
+        const validationReport = await createValidationReport(query, profile);
 
         // Assertions based on expected outcomes
-        expect(validationReport.conforms).toEqual(false);
+        expect(validationReport.report.conforms).toEqual(false);
     });
 });
