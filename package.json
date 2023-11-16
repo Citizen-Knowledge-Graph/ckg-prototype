@@ -7,7 +7,8 @@
   "scripts": {
     "build": "tsc",
     "start": "tsc && node dist/cli/cli.js",
-    "test": "jest"
+    "test": "jest",
+    "clean": "rm -rf dist && rm -rf node_modules && rm -rf src/**/*.js"
   },
   "main": "ckg.js",
   "type": "module",
