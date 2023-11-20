@@ -73,7 +73,7 @@ export function prettyPrintCombinedReport(reports: NamedValidationReport[]) {
 
     console.log(`\n--> Results of running all queries on ${reports[0].profileName}:`);
     console.log(table.toString());
-    console.log(`For more details, run for instance: "npm start run-query-on-profile citizen-solar-funding ${reports[0].profileName}}"`);
+    console.log(`For more details, run for instance: "npm start run-query-on-profile citizen-solar-funding ${reports[0].profileName}"`);
 }
 
 
