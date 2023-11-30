@@ -1,0 +1,24 @@
+@prefix ckg: <http://ckg.de/default#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+{
+    ?s rdf:type ckg:CitizenProfile .
+} => {
+    ?s ckg:isValidCitizenProfile true .
+}.
+
+{
+    ?citizen a ckg:Citizen ;
+        ckg:owns ?house .
+    ?house a ckg:House .
+} => {
+    ?citizen ckg:validOwnership true .
+}.
+
+{
+    ?house a ckg:House ;
+        ckg:roofArea ?area ;
+    ckg:houseAge ?age .
+} => {
+    ?house ckg:eligibleForSolarFunding true .
+}.
