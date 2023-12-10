@@ -1,0 +1,64 @@
+# rents Flat AND (
+#    (AND Flat.livingArea < 55 AND monthlyIncome < 2000)
+#    OR
+#    (hasResidence "Berlin" AND hasChildren > 1 AND Flat.rentWarm/Flat.livingArea < 20)
+# )
+
+# ASK QUERY --> yields yes or no
+
+PREFIX : <http://ckg.de/default#>
+
+ASK {
+    ?citizen a :Citizen .
+    ?citizen :monthlyIncome ?monthlyIncome .
+    ?citizen :hasResidence ?residence .
+    ?citizen :hasChildren ?children .
+    ?citizen :rents ?flat .
+    ?flat :livingArea ?livingArea .
+    ?flat :rentWarm ?rentWarm .
+    FILTER (
+        (?livingArea < 55 && ?monthlyIncome < 2000)
+        ||
+        (?residence = "Berlin" && ?children > 1 && (?rentWarm / ?livingArea) < 20)
+    )
+}
+
+## --> output: YES
+
+# SELECT QUERY
+
+PREFIX : <http://ckg.de/default#>
+
+SELECT * WHERE {
+    ?citizen a :Citizen .
+
+    ?citizen :monthlyIncome ?monthlyIncome .
+    BIND(IF(!BOUND(?monthlyIncome), "missing", IF(?monthlyIncome < 2000, "ok", "over")) AS ?monthlyIncomeEval)
+
+    ?citizen :hasResidence ?residence .
+    BIND(IF(!BOUND(?residence), "missing", IF(?residence = "Berlin", "ok", "not applicable")) AS ?residenceEval)
+
+    ?citizen :hasChildren ?children .
+    BIND(IF(!BOUND(?children), "missing", IF(?children > 1, "ok", "under")) AS ?childrenEval)
+
+    ?citizen :rents ?flat .
+    BIND(IF(!BOUND(?flat), "missing", "ok") AS ?flatEval)
+
+    ?flat :livingArea ?livingArea .
+    BIND(IF(!BOUND(?livingArea), "missing", IF(?livingArea < 55, "ok", "over")) AS ?livingAreaEval)
+
+    ?flat :rentWarm ?rentWarm .
+    BIND(?rentWarm / ?livingArea AS ?rentPerSqm) .
+    BIND(IF(!BOUND(?rentPerSqm), "missing", IF(?rentPerSqm < 20, "ok", "over")) AS ?rentPerSqmEval)
+
+    BIND (
+        ?flatEval = "ok" && (
+            (?monthlyIncomeEval = "ok" && ?livingAreaEval = "ok") ||
+            (?residenceEval = "ok" && ?childrenEval = "ok" && ?rentPerSqmEval = "ok")
+        )
+    AS ?eligible)
+}
+
+## --> output table with one row, header and content below:
+### citizen, monthlyIncome, monthlyIncomeEval, residence, residenceEval, children, childrenEval, flat, flatEval, livingArea, livingAreaEval, rentWarm, rentPerSqm, rentPerSqmEval, eligible
+### :citizen-d, 1800, "ok", "Berlin", "ok", 2, "ok", :FlatA, "ok", 50, ok, 900, 18, "ok", true

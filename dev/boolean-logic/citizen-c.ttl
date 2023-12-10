@@ -1,0 +1,11 @@
+@prefix : <http://ckg.de/default#> .
+
+:FlatA a :Flat ;
+       :livingArea 50 ;
+       :rentWarm 900 .
+
+:citizen-d a :Citizen ;
+           :rents :FlatA ;
+           :monthlyIncome 1800 ;
+           :hasResidence "Berlin" ;
+           :hasChildren 2 .
