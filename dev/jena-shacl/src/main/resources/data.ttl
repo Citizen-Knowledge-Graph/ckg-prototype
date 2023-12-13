@@ -5,10 +5,11 @@ ckg:this a ckg:CitizenProfile .
 
 ckg:HouseA a ckg:House ;
            ckg:roofArea 110 ;
-           ckg:houseAge 15 .
+           ckg:houseAge 15 ;
+           ckg:groundArea 200 .
 
 ckg:CarA a ckg:Car ;
-         ckg:carAge 7 ;
+         ckg:carAge 5 ;
          ckg:carType "Electric" .
 
 ckg:citizen-a a ckg:Person, ckg:Citizen ;
