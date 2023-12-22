@@ -11,6 +11,13 @@ ckg:metadata
     ckg:targetGroup     ckg:Citizen ;
     ckg:fundingProvider ckg:GermanState .
 
+ckg:SparqlPrefixes
+    sh:declare [
+                   sh:namespace "http://ckg.de/default#"^^xsd:anyURI ;
+                   sh:prefix "ckg" ;
+               ] ;
+.
+
 ckg:TypeDeclarationShape
     a             sh:NodeShape ;
     sh:targetNode ckg:this ;
@@ -48,12 +55,12 @@ ckg:HouseEligibleForSolarFundingShape
                      sh:message      "20" ; ] ;
     sh:sparql      [ a           sh:SPARQLConstraint ;   # This triple is optional
                      sh:message  "Combined roof area and ground area must be greater than 150" ;
-                     sh:prefixes ckg: ;
+                     sh:prefixes ckg:SparqlPrefixes ;
                      sh:select   """
 			SELECT $this
 			WHERE {
-				$this <http://ckg.de/default#roofArea> ?roofArea .
-				$this <http://ckg.de/default#groundArea> ?groundArea .
+				$this ckg:roofArea ?roofArea .
+				$this ckg:groundArea ?groundArea .
 				BIND((?roofArea + ?groundArea) AS ?aggregateValue)
 				FILTER(?aggregateValue <= 150)
 			}
