@@ -54,7 +54,7 @@ ckg:HouseEligibleForSolarFundingShape
 			WHERE {
 				$this <http://ckg.de/default#roofArea> ?roofArea .
 				$this <http://ckg.de/default#groundArea> ?groundArea .
-				BIND((?groundArea + ?groundArea) AS ?aggregateValue)
-				FILTER(?aggregateValue > 150)
+				BIND((?roofArea + ?groundArea) AS ?aggregateValue)
+				FILTER(?aggregateValue <= 150)
 			}
 			""" ; ] .
